@@ -56,7 +56,7 @@
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
 
 <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
 
@@ -95,32 +95,37 @@
 	database.ref().push({
 		trainName: trainName,
 		destination: destination,
-		firstTrain: fristTrain,
+		firstTrain: firstTrain,
 		frequency: frequency,
 		//dateAdded: firebase.database.ServerValue.TIMESTAMP
 	});
 
   });
+	//var convertedFirst = moment(new Date(childSnapshot.val().startDate));
+	var currentTime = moment().format('HH:mm');
+	var nextTrain =  moment().diff(firstTrain);
+	console.log(nextTrain);
 
   // database.ref().on("child_added", function(childSnapshot) {
 	//
   //   // Log everything that's coming out of snapshot
-  //   console.log(childSnapshot.val().employeeName);
-  //   console.log(childSnapshot.val().employeeRole);
-  //   console.log(childSnapshot.val().startDate);
-  //   console.log(childSnapshot.val().monthlyRate);
-  //   console.log(childSnapshot.val().dateAdded);
+  //   console.log(childSnapshot.val().trainName);
+  //   console.log(childSnapshot.val().destination);
+  //   console.log(childSnapshot.val().firstTrain);
+  //   console.log(childSnapshot.val().frequency);
 	//
-  //   var convertedDate = moment(new Date(childSnapshot.val().startDate));
-  // monthsWorked = moment().diff(moment(convertedDate), "months");
+	//
+
+
+
   // console.log(monthsWorked);
   // totalBilled=monthsWorked * childSnapshot.val().monthlyRate;
-	//
-	//
-	//
-  //   $("#table-body").append("<tr><td>"+childSnapshot.val().employeeName+"</td><td>"+childSnapshot.val().employeeRole+"</td><td>"+childSnapshot.val().startDate+"</td><td>"+monthsWorked+"</td><td>"+childSnapshot.val().monthlyRate+"</td><td>"+totalBilled+"</td></tr>");
-	//
-  // // Handle the errors
+
+
+
+  //  $("#table-body").append("<tr><td>"+childSnapshot.val().trainName+"</td><td>"+childSnapshot.val().destination+"</td><td>"+childSnapshot.val().firstTrain+"</td><td>"+childSnapshot.val().frequency+"</td></tr>");
+
+  //Handle the errors
   // }, function(errorObject) {
   //   console.log("Errors handled: " + errorObject.code);
   // });
