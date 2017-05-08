@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>RR Train Schedule</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+</head>
+<body class="container">
+	<div class="jumbotron" style="background:tan; color:white; text-align: center">
+		<h3>Ruben's Train Station</h3>
+		<p>The Trains Always Run on Time</p>
+	</div>
+
+	<div class="panel panel-default">
+	  <div class="panel-heading" style="background-color:lightblue; color: white">Current Train Schedule</div>
+	  <div class="panel-body">
+	    <table class="table">
+		  <thead>
+		    <tr>
+		      <th>Train Name</th>
+		      <th>Destination</th>
+		      <th>Frequency (min)</th>
+		      <th>Next Arrival</th>
+		      <th>Minutes Away</th>
+		    </tr>
+		  </thead>
+		  <tbody id="table-body">
+
+		  </tbody>
+		</table>
+	  </div>
+	</div>
+
+	<div class="panel panel-default">
+	  <div class="panel-heading" style="background-color:lightblue; color: white">Add Employee</div>
+	  <div class="panel-body">
+	    <form>
+		    <label for="employeename">Employee Name</label><br>
+		    <input style="width:90%;" type="text" id="employeename" name="employeename" placeholder="Your name.."><br><br>
+
+		    <label for="role">Role</label><br>
+		    <input style="width:90%;" type="text" id="role" name="role" placeholder="Role"><br><br>
+
+		    <label for="role">Start Date (MM/DD/YY)</label><br>
+		    <input style="width:90%;" type="text" id="startdate" name="startdate" placeholder="MM/DD/YY"><br><br>
+
+		    <label for="monthlyrate">Monthly Rate ($)</label><br>
+		    <input style="width:90%;" type="text" id="monthlyrate" name="monthlyrate" placeholder="$$">
+
+
+		    <br><br><input id="submit-employee" type="submit" value="Submit">
+		</form>
+	  </div>
+	</div>
+
+</body>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+
+<script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+
+<script>
+
+	var config = {
+     apiKey: "AIzaSyBHDtesti5opCchU1r0dnUTkVRN0t0TIbA",
+     authDomain: "employee-data-mgmt-activity.firebaseapp.com",
+     databaseURL: "https://employee-data-mgmt-activity.firebaseio.com",
+     projectId: "employee-data-mgmt-activity",
+     storageBucket: "employee-data-mgmt-activity.appspot.com",
+     messagingSenderId: "842532349475"
+    };
+
+    firebase.initializeApp(config);
+
+    var database = firebase.database();
+
+    var employeeName = "";
+    var employeeRole = "";
+    var startDate = "";
+    var monthlyRate = -1;
+    var monthsWorked= -1;
+    var totalBilled = -1;
+
+    $("#submit-employee").on("click", function() {
+
+		event.preventDefault();
+
+		console.log(event);
+		employeeName = $("#employeename").val().trim();
+		employeeRole = $("#role").val().trim();
+		startDate = $("#startdate").val().trim();
+		monthlyRate = $("#monthlyrate").val().trim();
+
+		database.ref().push({
+			employeeName: employeeName,
+			employeeRole: employeeRole,
+			startDate: startDate,
+			monthlyRate: monthlyRate,
+			dateAdded: firebase.database.ServerValue.TIMESTAMP
+		});
+
+    });
+
+    database.ref().on("child_added", function(childSnapshot) {
+
+      // Log everything that's coming out of snapshot
+      console.log(childSnapshot.val().employeeName);
+      console.log(childSnapshot.val().employeeRole);
+      console.log(childSnapshot.val().startDate);
+      console.log(childSnapshot.val().monthlyRate);
+      console.log(childSnapshot.val().dateAdded);
+
+      var convertedDate = moment(new Date(childSnapshot.val().startDate));
+	  monthsWorked = moment().diff(moment(convertedDate), "months");
+	  console.log(monthsWorked);
+	  totalBilled=monthsWorked * childSnapshot.val().monthlyRate;
+
+
+
+      $("#table-body").append("<tr><td>"+childSnapshot.val().employeeName+"</td><td>"+childSnapshot.val().employeeRole+"</td><td>"+childSnapshot.val().startDate+"</td><td>"+monthsWorked+"</td><td>"+childSnapshot.val().monthlyRate+"</td><td>"+totalBilled+"</td></tr>");
+
+    // Handle the errors
+    }, function(errorObject) {
+      console.log("Errors handled: " + errorObject.code);
+    });
+
+</script>
+
+</html>
