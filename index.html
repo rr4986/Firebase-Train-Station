@@ -7,7 +7,7 @@
 <body class="container">
 	<div class="jumbotron" style="background:tan; color:white; text-align: center">
 		<h3>Ruben's Train Station</h3>
-		<p>The Trains Always Run on Time</p>
+		<p>CHOO CHOO MF</p>
 	</div>
 
 	<div class="panel panel-default">
@@ -31,23 +31,23 @@
 	</div>
 
 	<div class="panel panel-default">
-	  <div class="panel-heading" style="background-color:lightblue; color: white">Add Employee</div>
+	  <div class="panel-heading" style="background-color:lightblue; color: white">Add Train</div>
 	  <div class="panel-body">
 	    <form>
-		    <label for="employeename">Employee Name</label><br>
-		    <input style="width:90%;" type="text" id="employeename" name="employeename" placeholder="Your name.."><br><br>
+		    <label for="train-name">Current Train Schedule</label><br>
+		    <input style="width:90%;" type="text" id="train-name" name="train-name" placeholder="Train name.."><br><br>
 
-		    <label for="role">Role</label><br>
-		    <input style="width:90%;" type="text" id="role" name="role" placeholder="Role"><br><br>
+		    <label for="destination">Destination</label><br>
+		    <input style="width:90%;" type="text" id="destination" name="destination" placeholder="Destination"><br><br>
 
-		    <label for="role">Start Date (MM/DD/YY)</label><br>
-		    <input style="width:90%;" type="text" id="startdate" name="startdate" placeholder="MM/DD/YY"><br><br>
+		    <label for="firsttrain">First Train Time (HH:mm)</label><br>
+		    <input style="width:90%;" type="text" id="first-train" name="first-train" placeholder="HH:mm"><br><br>
 
-		    <label for="monthlyrate">Monthly Rate ($)</label><br>
-		    <input style="width:90%;" type="text" id="monthlyrate" name="monthlyrate" placeholder="$$">
+		    <label for="frequency">Frequency (mm)</label><br>
+		    <input style="width:90%;" type="text" id="frequency" name="frequency" placeholder="mm">
 
 
-		    <br><br><input id="submit-employee" type="submit" value="Submit">
+		    <br><br><input id="add-train" type="submit" value="Submit">
 		</form>
 	  </div>
 	</div>
@@ -62,68 +62,68 @@
 
 <script>
 
+	// Initialize Firebase
 	var config = {
-     apiKey: "AIzaSyBHDtesti5opCchU1r0dnUTkVRN0t0TIbA",
-     authDomain: "employee-data-mgmt-activity.firebaseapp.com",
-     databaseURL: "https://employee-data-mgmt-activity.firebaseio.com",
-     projectId: "employee-data-mgmt-activity",
-     storageBucket: "employee-data-mgmt-activity.appspot.com",
-     messagingSenderId: "842532349475"
-    };
+		piKey: "AIzaSyAyvv3sfVo9EZgKJySYciqWfsQpqfDXsP4",
+		authDomain: "train-schedule-project-72366.firebaseapp.com",
+		databaseURL: "https://train-schedule-project-72366.firebaseio.com",
+		projectId: "train-schedule-project-72366",
+		storageBucket: "train-schedule-project-72366.appspot.com",
+		messagingSenderId: "489112450207"
+	};
 
-    firebase.initializeApp(config);
+  firebase.initializeApp(config);
 
-    var database = firebase.database();
+  var database = firebase.database();
 
-    var employeeName = "";
-    var employeeRole = "";
-    var startDate = "";
-    var monthlyRate = -1;
-    var monthsWorked= -1;
-    var totalBilled = -1;
+  var trainName = "";
+  var destination = "";
+  var firstTrain = 0;
+  var frequency = -1;
+  var minutesAway= -1;
 
-    $("#submit-employee").on("click", function() {
+  $("#add-train").on("click", function() {
 
-		event.preventDefault();
+	event.preventDefault();
 
-		console.log(event);
-		employeeName = $("#employeename").val().trim();
-		employeeRole = $("#role").val().trim();
-		startDate = $("#startdate").val().trim();
-		monthlyRate = $("#monthlyrate").val().trim();
+	console.log(event);
+	trainName = $("#train-name").val().trim();
+	destination = $("#destination").val().trim();
+	firstTrain = $("#first-train").val().trim();
+	frequency = $("#frequency").val().trim();
 
-		database.ref().push({
-			employeeName: employeeName,
-			employeeRole: employeeRole,
-			startDate: startDate,
-			monthlyRate: monthlyRate,
-			dateAdded: firebase.database.ServerValue.TIMESTAMP
-		});
+	database.ref().push({
+		trainName: trainName,
+		destination: destination,
+		firstTrain: fristTrain,
+		frequency: frequency,
+		//dateAdded: firebase.database.ServerValue.TIMESTAMP
+	});
 
-    });
+  });
 
-    database.ref().on("child_added", function(childSnapshot) {
-
-      // Log everything that's coming out of snapshot
-      console.log(childSnapshot.val().employeeName);
-      console.log(childSnapshot.val().employeeRole);
-      console.log(childSnapshot.val().startDate);
-      console.log(childSnapshot.val().monthlyRate);
-      console.log(childSnapshot.val().dateAdded);
-
-      var convertedDate = moment(new Date(childSnapshot.val().startDate));
-	  monthsWorked = moment().diff(moment(convertedDate), "months");
-	  console.log(monthsWorked);
-	  totalBilled=monthsWorked * childSnapshot.val().monthlyRate;
-
-
-
-      $("#table-body").append("<tr><td>"+childSnapshot.val().employeeName+"</td><td>"+childSnapshot.val().employeeRole+"</td><td>"+childSnapshot.val().startDate+"</td><td>"+monthsWorked+"</td><td>"+childSnapshot.val().monthlyRate+"</td><td>"+totalBilled+"</td></tr>");
-
-    // Handle the errors
-    }, function(errorObject) {
-      console.log("Errors handled: " + errorObject.code);
-    });
+  // database.ref().on("child_added", function(childSnapshot) {
+	//
+  //   // Log everything that's coming out of snapshot
+  //   console.log(childSnapshot.val().employeeName);
+  //   console.log(childSnapshot.val().employeeRole);
+  //   console.log(childSnapshot.val().startDate);
+  //   console.log(childSnapshot.val().monthlyRate);
+  //   console.log(childSnapshot.val().dateAdded);
+	//
+  //   var convertedDate = moment(new Date(childSnapshot.val().startDate));
+  // monthsWorked = moment().diff(moment(convertedDate), "months");
+  // console.log(monthsWorked);
+  // totalBilled=monthsWorked * childSnapshot.val().monthlyRate;
+	//
+	//
+	//
+  //   $("#table-body").append("<tr><td>"+childSnapshot.val().employeeName+"</td><td>"+childSnapshot.val().employeeRole+"</td><td>"+childSnapshot.val().startDate+"</td><td>"+monthsWorked+"</td><td>"+childSnapshot.val().monthlyRate+"</td><td>"+totalBilled+"</td></tr>");
+	//
+  // // Handle the errors
+  // }, function(errorObject) {
+  //   console.log("Errors handled: " + errorObject.code);
+  // });
 
 </script>
 
