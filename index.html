@@ -7,7 +7,7 @@
 <body class="container">
 	<div class="jumbotron" style="background:tan; color:white; text-align: center">
 		<h3>Ruben's Train Station</h3>
-		<p>CHOO CHOO MF</p>
+		<p id="stuff">CHOO CHOO MF</p>
 	</div>
 
 	<div class="panel panel-default">
@@ -62,6 +62,7 @@
 
 <script>
 
+	$("#stuff").append("<br>"+moment().format("HH:mm"));
 	// Initialize Firebase
 	var config = {
 		piKey: "AIzaSyAyvv3sfVo9EZgKJySYciqWfsQpqfDXsP4",
@@ -84,51 +85,49 @@
 
   $("#add-train").on("click", function() {
 
-	event.preventDefault();
+		event.preventDefault();
 
-	console.log(event);
-	trainName = $("#train-name").val().trim();
-	destination = $("#destination").val().trim();
-	firstTrain = $("#first-train").val().trim();
-	frequency = $("#frequency").val().trim();
+		//console.log(event);
+		trainName = $("#train-name").val().trim();
+		destination = $("#destination").val().trim();
+		firstTrain = $("#first-train").val().trim();
+		frequency = $("#frequency").val().trim();
 
-	database.ref().push({
-		trainName: trainName,
-		destination: destination,
-		firstTrain: firstTrain,
-		frequency: frequency,
-		//dateAdded: firebase.database.ServerValue.TIMESTAMP
+		database.ref().push({
+			trainName: trainName,
+			destination: destination,
+			firstTrain: firstTrain,
+			frequency: frequency,
+
+		});
 	});
 
+
+
+
+  database.ref().on("child_added", function(childSnapshot) {
+
+
+
+			var firstTrainConverted = moment(firstTrain, "hh:mm").subtract(1, "years");
+
+			var currentTime = moment();
+
+			var diffTime = moment().diff(moment(firstTrainConverted), "minutes");
+
+			var tRemainder = diffTime % frequency;
+
+			minutesAway = frequency - tRemainder;
+
+			var nextTrain = moment().add(minutesAway, "minutes");
+
+
+
+			$("#table-body").append("<tr><td>"+childSnapshot.val().trainName+"</td><td>"+childSnapshot.val().destination+"</td><td>"+childSnapshot.val().frequency+"</td><td>"+moment(nextTrain).format("HH:mm")+"</td><td>"+minutesAway+"</td></tr>");
+
+
   });
-	//var convertedFirst = moment(new Date(childSnapshot.val().startDate));
-	var currentTime = moment().format('HH:mm');
-	var nextTrain =  moment().diff(firstTrain);
-	console.log(nextTrain);
 
-  // database.ref().on("child_added", function(childSnapshot) {
-	//
-  //   // Log everything that's coming out of snapshot
-  //   console.log(childSnapshot.val().trainName);
-  //   console.log(childSnapshot.val().destination);
-  //   console.log(childSnapshot.val().firstTrain);
-  //   console.log(childSnapshot.val().frequency);
-	//
-	//
-
-
-
-  // console.log(monthsWorked);
-  // totalBilled=monthsWorked * childSnapshot.val().monthlyRate;
-
-
-
-  //  $("#table-body").append("<tr><td>"+childSnapshot.val().trainName+"</td><td>"+childSnapshot.val().destination+"</td><td>"+childSnapshot.val().firstTrain+"</td><td>"+childSnapshot.val().frequency+"</td></tr>");
-
-  //Handle the errors
-  // }, function(errorObject) {
-  //   console.log("Errors handled: " + errorObject.code);
-  // });
 
 </script>
 
